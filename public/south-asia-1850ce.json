@@ -1,0 +1,138 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bengal Presidency",
+        "year": 1850,
+        "type": "territory"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [85.5, 27.0],
+            [88.0, 27.5],
+            [89.5, 26.5],
+            [91.5, 26.0],
+            [92.5, 25.0],
+            [91.0, 23.5],
+            [89.0, 22.0],
+            [88.5, 21.5],
+            [86.5, 20.5],
+            [84.5, 20.0],
+            [83.0, 20.5],
+            [82.5, 22.0],
+            [83.5, 23.0],
+            [84.0, 24.0],
+            [84.5, 25.5],
+            [85.5, 27.0]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Awadh (Oudh) Principality",
+        "year": 1850,
+        "type": "territory"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [79.5, 28.5],
+            [81.0, 28.5],
+            [82.5, 28.0],
+            [83.5, 27.5],
+            [84.0, 26.5],
+            [83.0, 25.5],
+            [81.5, 25.5],
+            [80.0, 26.0],
+            [79.0, 27.0],
+            [79.5, 28.5]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Punjab (Sikh Confederacy / British Annexed 1849)",
+        "year": 1850,
+        "type": "territory"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [70.5, 34.5],
+            [72.0, 34.5],
+            [74.0, 34.0],
+            [76.0, 33.5],
+            [77.5, 32.5],
+            [76.5, 30.5],
+            [74.5, 30.0],
+            [72.5, 30.5],
+            [71.0, 31.5],
+            [69.5, 32.5],
+            [70.0, 34.0],
+            [70.5, 34.5]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "1857 Rebellion Zone — Meerut to Delhi to Bihar",
+        "year": 1850,
+        "type": "rebellion_route"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [77.7, 29.0],
+          [77.2, 28.6],
+          [78.5, 27.5],
+          [79.5, 27.0],
+          [80.5, 27.5],
+          [81.5, 26.5],
+          [82.5, 26.0],
+          [83.5, 25.5],
+          [84.5, 25.3],
+          [85.0, 25.5],
+          [86.0, 25.0],
+          [87.0, 25.2]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Exile and Migration Route — Delhi to Makkah via Kabul",
+        "year": 1850,
+        "type": "exile_route"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [77.2, 28.6],
+          [74.0, 31.5],
+          [70.5, 34.5],
+          [68.0, 36.5],
+          [65.0, 37.5],
+          [62.0, 37.5],
+          [58.5, 35.0],
+          [55.0, 33.0],
+          [50.0, 30.0],
+          [46.0, 27.5],
+          [43.5, 24.0],
+          [39.8, 21.4]
+        ]
+      }
+    }
+  ]
+}
