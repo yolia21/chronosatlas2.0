@@ -40,7 +40,118 @@ export default function VisualHistoryPage() {
   return (
     <main className="fixed inset-0 overflow-hidden" style={{ background: "#0D0C0A" }}>
 
-      {/* ── Full-screen map — always fills entire viewport ─── */}
+      {/* ══════════════════════════════════════════════════════
+          ALWAYS-VISIBLE HAMBURGER BUTTON — z-index 60, solid bg
+          Never hidden, never covered, always top-left
+      ══════════════════════════════════════════════════════ */}
+      <button
+        onClick={() => setNavOpen((p) => !p)}
+        aria-label="Open empire navigation menu"
+        style={{
+          position: "fixed",
+          top: "14px",
+          left: "14px",
+          zIndex: 60,
+          width: "44px",
+          height: "44px",
+          borderRadius: "10px",
+          background: navOpen
+            ? "rgba(212,175,55,0.25)"
+            : "rgba(20,18,14,0.92)",
+          border: "1.5px solid rgba(212,175,55,0.45)",
+          color: "#D4AF37",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          boxShadow: "0 2px 16px rgba(0,0,0,0.55)",
+          backdropFilter: "blur(10px)",
+          transition: "background 0.2s, transform 0.15s",
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.05)";
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)";
+        }}
+      >
+        {/* Three lines — always drawn manually so they never disappear */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+          <div style={{ width: "20px", height: "2px", background: "#D4AF37", borderRadius: "2px" }} />
+          <div style={{ width: "20px", height: "2px", background: "#D4AF37", borderRadius: "2px" }} />
+          <div style={{ width: "14px", height: "2px", background: "#D4AF37", borderRadius: "2px" }} />
+        </div>
+      </button>
+
+      {/* ── App title — top centre ─────────────────────────── */}
+      <div
+        style={{
+          position: "fixed",
+          top: "14px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 30,
+          pointerEvents: "none",
+          textAlign: "center",
+        }}
+      >
+        <h1
+          className="font-serif font-bold"
+          style={{
+            fontSize: "18px",
+            lineHeight: 1,
+            background: "linear-gradient(135deg, #D4AF37, #F4EBE1)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          تاریخ بصری
+        </h1>
+        <p
+          className="font-sans"
+          style={{ fontSize: "9px", letterSpacing: "0.3em", textTransform: "uppercase", color: "rgba(212,175,55,0.45)", marginTop: "3px" }}
+        >
+          Visual History
+        </p>
+      </div>
+
+      {/* ── Active era badge — top right ───────────────────── */}
+      {activeEra.empires.length > 0 && (
+        <div
+          style={{
+            position: "fixed",
+            top: "14px",
+            right: "14px",
+            zIndex: 30,
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            padding: "6px 14px",
+            borderRadius: "999px",
+            background: `${activeEra.empires[0].borderColor}22`,
+            border: `1px solid ${activeEra.empires[0].borderColor}44`,
+            backdropFilter: "blur(10px)",
+            pointerEvents: "none",
+          }}
+        >
+          <div
+            style={{
+              width: "7px",
+              height: "7px",
+              borderRadius: "50%",
+              background: activeEra.empires[0].borderColor,
+              boxShadow: `0 0 6px ${activeEra.empires[0].borderColor}`,
+            }}
+          />
+          <span className="font-sans" style={{ fontSize: "11px", color: "#D4C490" }}>
+            {activeEra.empires.length === 1
+              ? activeEra.empires[0].name
+              : `${activeEra.empires.length} empires · ${activeEra.label}`}
+          </span>
+        </div>
+      )}
+
+      {/* ── Full-screen map ────────────────────────────────── */}
       <div className="absolute inset-0">
         <HistoricalMap
           era={activeEra}
@@ -49,113 +160,53 @@ export default function VisualHistoryPage() {
         />
       </div>
 
-      {/* ── Top header bar ─────────────────────────────────── */}
-      <div
-        className="absolute top-0 left-0 right-0 z-30 flex items-center gap-3 px-4 py-3"
-        style={{
-          background: "linear-gradient(to bottom, rgba(13,12,10,0.94) 0%, transparent 100%)",
-          pointerEvents: "none",
-        }}
-      >
-        {/* Hamburger menu button */}
-        <button
-          onClick={() => setNavOpen(true)}
-          className="w-10 h-10 flex items-center justify-center rounded-xl flex-shrink-0 transition-all duration-200 active:scale-95"
-          style={{
-            background: "rgba(212,175,55,0.12)",
-            border: "1px solid rgba(212,175,55,0.3)",
-            color: "#D4AF37",
-            pointerEvents: "auto",
-          }}
-          aria-label="Open empire navigation"
-        >
-          <Menu size={18} />
-        </button>
-
-        {/* App title */}
-        <div style={{ pointerEvents: "none" }}>
-          <h1
-            className="font-serif text-lg font-bold leading-none"
-            style={{
-              background: "linear-gradient(135deg, #D4AF37, #F4EBE1)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            تاریخ بصری
-          </h1>
-          <p
-            className="text-[9px] font-sans tracking-[0.3em] uppercase mt-0.5"
-            style={{ color: "rgba(212,175,55,0.5)" }}
-          >
-            Visual History
-          </p>
-        </div>
-
-        {/* Active era badge */}
-        <div className="flex-1 flex justify-end" style={{ pointerEvents: "none" }}>
-          {activeEra.empires.length > 0 && (
-            <div
-              className="hidden sm:flex items-center gap-2 rounded-full px-3 py-1.5"
-              style={{
-                background: `${activeEra.empires[0].borderColor}22`,
-                border: `1px solid ${activeEra.empires[0].borderColor}44`,
-              }}
-            >
-              <div
-                className="w-1.5 h-1.5 rounded-full"
-                style={{
-                  background: activeEra.empires[0].borderColor,
-                  boxShadow: `0 0 5px ${activeEra.empires[0].borderColor}`,
-                }}
-              />
-              <span className="text-xs font-sans" style={{ color: "#D4C490" }}>
-                {activeEra.empires.length === 1
-                  ? activeEra.empires[0].name
-                  : `${activeEra.empires.length} Empires · ${activeEra.label}`}
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* ── Click hint ────────────────────────────────────── */}
       {showHint && !navOpen && !detailOpen && (
         <div
-          className="absolute z-20 flex items-center gap-2 px-4 py-2 rounded-full pointer-events-none"
           style={{
+            position: "fixed",
             top: "72px",
             left: "50%",
             transform: "translateX(-50%)",
+            zIndex: 25,
+            pointerEvents: "none",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            padding: "8px 18px",
+            borderRadius: "999px",
             background: "rgba(20,18,14,0.88)",
-            border: "1px solid rgba(212,175,55,0.3)",
+            border: "1px solid rgba(212,175,55,0.28)",
             backdropFilter: "blur(8px)",
-            animation: "hintBounce 2.2s ease-in-out infinite",
             whiteSpace: "nowrap",
+            animation: "hintBounce 2.2s ease-in-out infinite",
           }}
         >
-          <Info size={12} style={{ color: "#D4AF37" }} />
-          <span className="text-xs font-sans" style={{ color: "rgba(244,235,225,0.8)" }}>
-            Click a region to explore · Use ☰ to switch empires
+          <Info size={12} color="#D4AF37" />
+          <span className="font-sans" style={{ fontSize: "11px", color: "rgba(244,235,225,0.8)" }}>
+            Click ☰ to browse empires · Click any region on the map to explore
           </span>
         </div>
       )}
 
       {/* ── Map legend ────────────────────────────────────── */}
       <div
-        className="absolute z-20 rounded-xl px-3 py-3 flex flex-col gap-1.5"
         style={{
+          position: "fixed",
           bottom: "130px",
-          left: "16px",
-          background: "rgba(13,12,10,0.85)",
-          border: "1px solid rgba(212,175,55,0.15)",
+          left: "14px",
+          zIndex: 25,
+          borderRadius: "12px",
+          padding: "12px 14px",
+          background: "rgba(13,12,10,0.86)",
+          border: "1px solid rgba(212,175,55,0.14)",
           backdropFilter: "blur(12px)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "6px",
         }}
       >
-        <p
-          className="text-[9px] uppercase tracking-[0.22em] font-sans mb-1"
-          style={{ color: "rgba(212,175,55,0.6)" }}
-        >
+        <p className="font-sans" style={{ fontSize: "9px", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(212,175,55,0.55)", marginBottom: "2px" }}>
           Legend
         </p>
         {[
@@ -166,14 +217,9 @@ export default function VisualHistoryPage() {
           { color: "#27AE60", label: "Sacred Site" },
           { color: "#E67E22", label: "Temple" },
         ].map((item) => (
-          <div key={item.label} className="flex items-center gap-2">
-            <div
-              className="w-2 h-2 rounded-full flex-shrink-0"
-              style={{ background: item.color }}
-            />
-            <span className="text-[10px] font-sans" style={{ color: "rgba(244,235,225,0.55)" }}>
-              {item.label}
-            </span>
+          <div key={item.label} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: item.color, flexShrink: 0 }} />
+            <span className="font-sans" style={{ fontSize: "10px", color: "rgba(244,235,225,0.55)" }}>{item.label}</span>
           </div>
         ))}
       </div>
