@@ -1,17 +1,18 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
-import { Info } from "lucide-react";
+import { Menu, Info } from "lucide-react";
 import HistoricalMap from "@/components/HistoricalMap";
 import SidebarPanel from "@/components/SidebarPanel";
 import TimeSlider from "@/components/TimeSlider";
 import EmpireNavSidebar from "@/components/EmpireNavSidebar";
-import { ERAS, getEraByYear, type EmpireData, type EraYear } from "@/data/worldHistoryData";
+import { getEraByYear, type EmpireData, type EraYear } from "@/data/worldHistoryData";
 
 export default function VisualHistoryPage() {
   const [activeYear, setActiveYear] = useState<EraYear>(-1350);
   const [selectedEmpire, setSelectedEmpire] = useState<EmpireData | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
   const [showHint, setShowHint] = useState(true);
 
   const activeEra = getEraByYear(activeYear);
@@ -24,10 +25,10 @@ export default function VisualHistoryPage() {
   }, []);
 
   const handleSelectEmpire = useCallback((empire: EmpireData) => {
-    // If clicking empire from nav sidebar, also change era
     setActiveYear(empire.era);
     setSelectedEmpire(empire);
     setDetailOpen(true);
+    setNavOpen(false);
     setShowHint(false);
   }, []);
 
@@ -39,21 +40,8 @@ export default function VisualHistoryPage() {
   return (
     <main className="fixed inset-0 overflow-hidden" style={{ background: "#0D0C0A" }}>
 
-      {/* ── Left Empire Navigator ─────────────────────────── */}
-      <EmpireNavSidebar
-        activeYear={activeYear}
-        selectedEmpireId={selectedEmpire?.id ?? null}
-        onSelectEmpire={handleSelectEmpire}
-      />
-
-      {/* ── Map area — positioned right of left sidebar ────── */}
-      <div
-        className="absolute top-0 bottom-0 transition-all duration-300"
-        style={{
-          left: "52px", // collapsed sidebar width; sidebar handles its own width
-          right: detailOpen ? "min(420px, 92vw)" : "0",
-        }}
-      >
+      {/* ── Full-screen map — always fills entire viewport ─── */}
+      <div className="absolute inset-0">
         <HistoricalMap
           era={activeEra}
           selectedEmpire={selectedEmpire}
@@ -61,17 +49,31 @@ export default function VisualHistoryPage() {
         />
       </div>
 
-      {/* ── Top header overlay ────────────────────────────── */}
+      {/* ── Top header bar ─────────────────────────────────── */}
       <div
-        className="absolute top-0 z-30 flex items-center justify-between px-4 py-3 pointer-events-none"
+        className="absolute top-0 left-0 right-0 z-30 flex items-center gap-3 px-4 py-3"
         style={{
-          left: "52px",
-          right: "0",
-          background: "linear-gradient(to bottom, rgba(13,12,10,0.92) 0%, transparent 100%)",
+          background: "linear-gradient(to bottom, rgba(13,12,10,0.94) 0%, transparent 100%)",
+          pointerEvents: "none",
         }}
       >
-        {/* Title */}
-        <div>
+        {/* Hamburger menu button */}
+        <button
+          onClick={() => setNavOpen(true)}
+          className="w-10 h-10 flex items-center justify-center rounded-xl flex-shrink-0 transition-all duration-200 active:scale-95"
+          style={{
+            background: "rgba(212,175,55,0.12)",
+            border: "1px solid rgba(212,175,55,0.3)",
+            color: "#D4AF37",
+            pointerEvents: "auto",
+          }}
+          aria-label="Open empire navigation"
+        >
+          <Menu size={18} />
+        </button>
+
+        {/* App title */}
+        <div style={{ pointerEvents: "none" }}>
           <h1
             className="font-serif text-lg font-bold leading-none"
             style={{
@@ -82,65 +84,78 @@ export default function VisualHistoryPage() {
           >
             تاریخ بصری
           </h1>
-          <p className="text-[9px] font-sans tracking-[0.3em] uppercase mt-0.5" style={{ color: "rgba(212,175,55,0.55)" }}>
+          <p
+            className="text-[9px] font-sans tracking-[0.3em] uppercase mt-0.5"
+            style={{ color: "rgba(212,175,55,0.5)" }}
+          >
             Visual History
           </p>
         </div>
 
-        {/* Active era pill */}
-        {activeEra.empires.length > 0 && (
-          <div
-            className="hidden sm:flex items-center gap-2 rounded-full px-3 py-1.5 pointer-events-auto"
-            style={{
-              background: `${activeEra.empires[0].borderColor}25`,
-              border: `1px solid ${activeEra.empires[0].borderColor}55`,
-            }}
-          >
+        {/* Active era badge */}
+        <div className="flex-1 flex justify-end" style={{ pointerEvents: "none" }}>
+          {activeEra.empires.length > 0 && (
             <div
-              className="w-1.5 h-1.5 rounded-full"
-              style={{ background: activeEra.empires[0].borderColor, boxShadow: `0 0 6px ${activeEra.empires[0].borderColor}` }}
-            />
-            <span className="text-xs font-sans" style={{ color: "#E8D9B5" }}>
-              {activeEra.empires.length === 1
-                ? activeEra.empires[0].name
-                : `${activeEra.empires.length} Empires — ${activeEra.label}`}
-            </span>
-          </div>
-        )}
+              className="hidden sm:flex items-center gap-2 rounded-full px-3 py-1.5"
+              style={{
+                background: `${activeEra.empires[0].borderColor}22`,
+                border: `1px solid ${activeEra.empires[0].borderColor}44`,
+              }}
+            >
+              <div
+                className="w-1.5 h-1.5 rounded-full"
+                style={{
+                  background: activeEra.empires[0].borderColor,
+                  boxShadow: `0 0 5px ${activeEra.empires[0].borderColor}`,
+                }}
+              />
+              <span className="text-xs font-sans" style={{ color: "#D4C490" }}>
+                {activeEra.empires.length === 1
+                  ? activeEra.empires[0].name
+                  : `${activeEra.empires.length} Empires · ${activeEra.label}`}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ── Click hint ────────────────────────────────────── */}
-      {showHint && (
+      {showHint && !navOpen && !detailOpen && (
         <div
-          className="absolute top-16 z-30 flex items-center gap-2 px-4 py-2 rounded-full pointer-events-none"
+          className="absolute z-20 flex items-center gap-2 px-4 py-2 rounded-full pointer-events-none"
           style={{
+            top: "72px",
             left: "50%",
             transform: "translateX(-50%)",
-            background: "rgba(26,24,20,0.88)",
-            border: "1px solid rgba(212,175,55,0.35)",
+            background: "rgba(20,18,14,0.88)",
+            border: "1px solid rgba(212,175,55,0.3)",
             backdropFilter: "blur(8px)",
-            animation: "hintBounce 2s ease-in-out infinite",
+            animation: "hintBounce 2.2s ease-in-out infinite",
+            whiteSpace: "nowrap",
           }}
         >
           <Info size={12} style={{ color: "#D4AF37" }} />
           <span className="text-xs font-sans" style={{ color: "rgba(244,235,225,0.8)" }}>
-            Click a region to explore · Use the left panel to switch empires
+            Click a region to explore · Use ☰ to switch empires
           </span>
         </div>
       )}
 
       {/* ── Map legend ────────────────────────────────────── */}
       <div
-        className="absolute z-30 rounded-lg px-3 py-2.5 flex flex-col gap-1.5"
+        className="absolute z-20 rounded-xl px-3 py-3 flex flex-col gap-1.5"
         style={{
           bottom: "130px",
-          left: "62px",
-          background: "rgba(13,12,10,0.82)",
-          border: "1px solid rgba(212,175,55,0.18)",
-          backdropFilter: "blur(10px)",
+          left: "16px",
+          background: "rgba(13,12,10,0.85)",
+          border: "1px solid rgba(212,175,55,0.15)",
+          backdropFilter: "blur(12px)",
         }}
       >
-        <p className="text-[9px] uppercase tracking-[0.2em] font-sans mb-0.5" style={{ color: "rgba(212,175,55,0.65)" }}>
+        <p
+          className="text-[9px] uppercase tracking-[0.22em] font-sans mb-1"
+          style={{ color: "rgba(212,175,55,0.6)" }}
+        >
           Legend
         </p>
         {[
@@ -152,11 +167,25 @@ export default function VisualHistoryPage() {
           { color: "#E67E22", label: "Temple" },
         ].map((item) => (
           <div key={item.label} className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: item.color }} />
-            <span className="text-[10px] font-sans" style={{ color: "rgba(244,235,225,0.6)" }}>{item.label}</span>
+            <div
+              className="w-2 h-2 rounded-full flex-shrink-0"
+              style={{ background: item.color }}
+            />
+            <span className="text-[10px] font-sans" style={{ color: "rgba(244,235,225,0.55)" }}>
+              {item.label}
+            </span>
           </div>
         ))}
       </div>
+
+      {/* ── Left empire navigation drawer ─────────────────── */}
+      <EmpireNavSidebar
+        isOpen={navOpen}
+        onClose={() => setNavOpen(false)}
+        activeYear={activeYear}
+        selectedEmpireId={selectedEmpire?.id ?? null}
+        onSelectEmpire={handleSelectEmpire}
+      />
 
       {/* ── Right detail panel ────────────────────────────── */}
       <SidebarPanel
@@ -165,7 +194,7 @@ export default function VisualHistoryPage() {
         onClose={handleCloseDetail}
       />
 
-      {/* ── Timeline ──────────────────────────────────────── */}
+      {/* ── Bottom timeline ───────────────────────────────── */}
       <TimeSlider activeYear={activeYear} onYearChange={handleYearChange} />
     </main>
   );
