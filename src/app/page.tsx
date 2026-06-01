@@ -142,13 +142,13 @@ export default function VisualHistoryPage() {
         </div>
       )}
 
-      {/* ── Map legend — hidden when nav or detail panel is open */}
+      {/* ── Map legend — low z-index so drawer backdrop always covers it */}
       <div
         style={{
           position: "fixed",
           bottom: "140px",
           left: "16px",
-          zIndex: 9998,
+          zIndex: 100,
           borderRadius: "12px",
           padding: "12px 14px",
           background: DARK,
@@ -156,6 +156,7 @@ export default function VisualHistoryPage() {
           boxShadow: "0 4px 20px rgba(0,0,0,0.55)",
           backdropFilter: "blur(12px)",
           display: navOpen || detailOpen ? "none" : "block",
+          pointerEvents: "none",
         }}
       >
         <p style={{ margin: "0 0 8px", fontFamily: "Arial, sans-serif", fontSize: "9px", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(212,175,55,0.55)" }}>
