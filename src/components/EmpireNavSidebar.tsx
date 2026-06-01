@@ -1,8 +1,11 @@
 "use client";
 
 import React from "react";
-import { X, Globe } from "lucide-react";
-import { ERAS, formatYear, type EraYear, type EmpireData } from "@/data/worldHistoryData";
+import { ERAS, type EraYear, type EmpireData } from "@/data/worldHistoryData";
+
+const GOLD = "#D4AF37";
+const DARK = "rgba(16,14,11,0.97)";
+const BORDER = "1px solid rgba(212,175,55,0.2)";
 
 interface EmpireNavSidebarProps {
   isOpen: boolean;
@@ -21,81 +24,125 @@ export default function EmpireNavSidebar({
 }: EmpireNavSidebarProps) {
   return (
     <>
-      {/* ── Backdrop ──────────────────────────────────────── */}
-      {isOpen && (
-        <div
-          onClick={onClose}
-          className="fixed inset-0 z-40"
-          style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(3px)" }}
-        />
-      )}
-
-      {/* ── Drawer panel ──────────────────────────────────── */}
-      <aside
-        className="fixed top-0 left-0 bottom-0 z-50 flex flex-col"
+      {/* Backdrop */}
+      <div
+        onClick={onClose}
         style={{
-          width: "260px",
+          position: "fixed",
+          inset: 0,
+          zIndex: 9995,
+          background: "rgba(0,0,0,0.52)",
+          backdropFilter: "blur(4px)",
+          opacity: isOpen ? 1 : 0,
+          pointerEvents: isOpen ? "auto" : "none",
+          transition: "opacity 0.3s ease",
+        }}
+      />
+
+      {/* Drawer */}
+      <aside
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          bottom: 0,
+          zIndex: 9996,
+          width: "270px",
+          background: `linear-gradient(to bottom, #141210, #1A1814)`,
+          borderRight: BORDER,
+          boxShadow: isOpen ? "6px 0 40px rgba(0,0,0,0.75)" : "none",
           transform: isOpen ? "translateX(0)" : "translateX(-100%)",
-          transition: "transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
-          background: "linear-gradient(to bottom, #141210, #1A1814)",
-          borderRight: "1px solid rgba(212,175,55,0.2)",
-          boxShadow: isOpen ? "4px 0 40px rgba(0,0,0,0.7)" : "none",
-          paddingBottom: "130px",
+          transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1), box-shadow 0.35s ease",
+          display: "flex",
+          flexDirection: "column",
+          paddingBottom: "140px",
+          overflowY: "auto",
         }}
       >
         {/* Header */}
         <div
-          className="flex items-center justify-between px-4 py-4 flex-shrink-0"
-          style={{ borderBottom: "1px solid rgba(212,175,55,0.15)" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "18px 16px 14px",
+            borderBottom: BORDER,
+            flexShrink: 0,
+          }}
         >
-          <div className="flex items-center gap-3">
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-              style={{ background: "linear-gradient(135deg,#8B6914,#D4AF37)" }}
-            >
-              <Globe size={15} color="#1A1814" />
-            </div>
-            <div>
-              <p className="font-serif text-sm font-bold" style={{ color: "#D4AF37" }}>تاریخ بصری</p>
-              <p className="text-[9px] font-sans tracking-widest uppercase" style={{ color: "rgba(212,175,55,0.45)" }}>
-                Visual History
-              </p>
-            </div>
+          <div>
+            <p style={{ margin: 0, fontFamily: "Georgia, serif", fontSize: "15px", fontWeight: 700, color: GOLD }}>
+              تاریخ بصری
+            </p>
+            <p style={{ margin: "3px 0 0", fontFamily: "Arial, sans-serif", fontSize: "9px", letterSpacing: "0.3em", textTransform: "uppercase", color: "rgba(212,175,55,0.4)" }}>
+              Browse Empires
+            </p>
           </div>
+
+          {/* Close button */}
           <button
             onClick={onClose}
-            className="w-7 h-7 flex items-center justify-center rounded-full flex-shrink-0 transition-colors duration-150"
-            style={{ background: "rgba(212,175,55,0.1)", color: "#D4AF37" }}
             aria-label="Close navigation"
+            style={{
+              width: "32px",
+              height: "32px",
+              borderRadius: "8px",
+              background: "rgba(212,175,55,0.12)",
+              border: "1px solid rgba(212,175,55,0.3)",
+              color: GOLD,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "18px",
+              lineHeight: 1,
+              outline: "none",
+              flexShrink: 0,
+            }}
           >
-            <X size={14} />
+            ✕
           </button>
         </div>
 
-        {/* Scrollable empire list */}
-        <nav className="flex-1 overflow-y-auto py-2" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(212,175,55,0.2) transparent" }}>
+        {/* Hint text */}
+        <p style={{ margin: "10px 16px 4px", fontFamily: "Arial, sans-serif", fontSize: "10px", color: "rgba(212,175,55,0.45)", fontStyle: "italic" }}>
+          Select an era and empire to explore
+        </p>
+
+        {/* Era / empire list */}
+        <nav style={{ flex: 1, overflowY: "auto", paddingBottom: "16px" }}>
           {ERAS.map((era) => {
             const isActiveEra = era.year === activeYear;
 
             return (
-              <div key={era.year} className="mb-1">
-                {/* Era header */}
-                <div className="flex items-center gap-2 px-4 py-2 mt-1">
+              <div key={era.year} style={{ marginBottom: "4px" }}>
+                {/* Era label */}
+                <div
+                  style={{
+                    padding: "10px 16px 6px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
                   <span
-                    className="text-[10px] font-sans uppercase tracking-[0.18em] font-semibold"
-                    style={{ color: isActiveEra ? "#D4AF37" : "rgba(244,235,225,0.3)" }}
+                    style={{
+                      fontFamily: "Arial, sans-serif",
+                      fontSize: "10px",
+                      letterSpacing: "0.18em",
+                      textTransform: "uppercase",
+                      fontWeight: 600,
+                      color: isActiveEra ? GOLD : "rgba(244,235,225,0.28)",
+                    }}
                   >
                     {era.label}
                   </span>
                   {isActiveEra && (
-                    <div
-                      className="h-px flex-1"
-                      style={{ background: "linear-gradient(to right, rgba(212,175,55,0.4), transparent)" }}
-                    />
+                    <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(212,175,55,0.4), transparent)" }} />
                   )}
                 </div>
 
-                {/* Empire buttons */}
+                {/* Empire rows */}
                 {era.empires.map((empire) => {
                   const isSelected = selectedEmpireId === empire.id && isActiveEra;
 
@@ -106,35 +153,61 @@ export default function EmpireNavSidebar({
                         onSelectEmpire(empire);
                         onClose();
                       }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-all duration-200"
                       style={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        padding: "10px 16px",
                         background: isSelected ? `${empire.borderColor}28` : "transparent",
-                        borderLeft: isSelected ? `3px solid ${empire.borderColor}` : "3px solid transparent",
+                        borderLeft: `3px solid ${isSelected ? empire.borderColor : "transparent"}`,
+                        borderTop: "none",
+                        borderRight: "none",
+                        borderBottom: "none",
+                        cursor: "pointer",
+                        outline: "none",
+                        textAlign: "left",
+                        transition: "background 0.2s",
                       }}
                     >
-                      <div
-                        className="w-3 h-3 rounded-full flex-shrink-0"
+                      {/* Color dot */}
+                      <span
                         style={{
+                          display: "inline-block",
+                          width: "10px",
+                          height: "10px",
+                          borderRadius: "50%",
                           background: empire.borderColor,
+                          flexShrink: 0,
                           boxShadow: isSelected ? `0 0 8px ${empire.borderColor}` : "none",
                         }}
                       />
-                      <div className="min-w-0">
+                      <div style={{ minWidth: 0 }}>
                         <p
-                          className="text-sm font-sans leading-tight truncate"
                           style={{
+                            margin: 0,
+                            fontFamily: "Arial, sans-serif",
+                            fontSize: "13px",
                             color: isSelected ? "#F4EBE1" : isActiveEra ? "#C8B89A" : "rgba(244,235,225,0.38)",
                             fontWeight: isSelected ? 600 : 400,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
                           }}
                         >
                           {empire.name}
                         </p>
                         {empire.nameAr && (
                           <p
-                            className="text-xs font-serif leading-tight"
                             style={{
-                              color: isSelected ? "#D4AF37" : "rgba(212,175,55,0.3)",
+                              margin: "2px 0 0",
+                              fontFamily: "Georgia, serif",
+                              fontSize: "11px",
+                              color: isSelected ? GOLD : "rgba(212,175,55,0.28)",
                               direction: "rtl",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
                             }}
                           >
                             {empire.nameAr}

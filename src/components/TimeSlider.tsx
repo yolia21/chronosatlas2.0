@@ -1,8 +1,10 @@
 "use client";
 
 import React from "react";
-import { Clock } from "lucide-react";
 import { ERAS, formatYear, type EraYear } from "@/data/worldHistoryData";
+
+const GOLD = "#D4AF37";
+const DARK = "rgba(14,12,9,0.97)";
 
 interface TimeSliderProps {
   activeYear: EraYear;
@@ -11,36 +13,60 @@ interface TimeSliderProps {
 
 export default function TimeSlider({ activeYear, onYearChange }: TimeSliderProps) {
   const activeIndex = ERAS.findIndex((e) => e.year === activeYear);
+  const activeEra = ERAS[activeIndex];
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 flex flex-col"
       style={{
-        background: "linear-gradient(to top, rgba(13,12,10,0.99) 0%, rgba(13,12,10,0.92) 100%)",
-        borderTop: "1px solid rgba(212,175,55,0.25)",
-        backdropFilter: "blur(20px)",
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 9990,
+        background: DARK,
+        borderTop: "1px solid rgba(212,175,55,0.28)",
+        boxShadow: "0 -4px 30px rgba(0,0,0,0.6)",
       }}
     >
       {/* Label row */}
-      <div className="flex items-center justify-between px-6 pt-3 pb-1 flex-shrink-0">
-        <div className="flex items-center gap-2">
-          <Clock size={12} className="text-[#D4AF37]/70" />
-          <span className="text-[#D4AF37]/70 text-[10px] uppercase tracking-[0.25em] font-sans">
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "10px 16px 6px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2">
+            <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+          </svg>
+          <span style={{ fontFamily: "Arial, sans-serif", fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(212,175,55,0.65)" }}>
             Timeline
           </span>
         </div>
-        <div className="text-right">
-          <span className="font-serif text-[#D4AF37] text-base font-bold leading-none">
+        <div style={{ textAlign: "right" }}>
+          <span style={{ fontFamily: "Georgia, serif", fontSize: "16px", fontWeight: 700, color: GOLD }}>
             {formatYear(activeYear)}
           </span>
-          <p className="text-[#F4EBE1]/50 text-[10px] font-sans mt-0.5 leading-none">
-            {ERAS[activeIndex]?.subtitle}
-          </p>
+          {activeEra && (
+            <p style={{ margin: "2px 0 0", fontFamily: "Arial, sans-serif", fontSize: "10px", color: "rgba(244,235,225,0.5)" }}>
+              {activeEra.subtitle}
+            </p>
+          )}
         </div>
       </div>
 
       {/* Era cards */}
-      <div className="flex items-stretch overflow-x-auto gap-px px-1 pb-2 pt-1 no-scrollbar">
+      <div
+        style={{
+          display: "flex",
+          overflowX: "auto",
+          gap: "4px",
+          padding: "4px 8px 12px",
+          scrollbarWidth: "none",
+        }}
+      >
         {ERAS.map((era, idx) => {
           const isActive = era.year === activeYear;
           const isPast = idx < activeIndex;
@@ -49,55 +75,61 @@ export default function TimeSlider({ activeYear, onYearChange }: TimeSliderProps
             <button
               key={era.year}
               onClick={() => onYearChange(era.year)}
-              className="flex-1 min-w-[80px] flex flex-col items-center justify-center px-2 py-2 rounded-lg relative transition-all duration-200 group"
+              aria-pressed={isActive}
               style={{
+                flexShrink: 0,
+                minWidth: "88px",
+                padding: "8px 10px",
+                borderRadius: "10px",
+                border: isActive
+                  ? `1px solid rgba(212,175,55,0.6)`
+                  : `1px solid rgba(212,175,55,0.12)`,
                 background: isActive
-                  ? "linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.08))"
+                  ? "linear-gradient(135deg, rgba(212,175,55,0.22), rgba(212,175,55,0.08))"
                   : isPast
                   ? "rgba(212,175,55,0.05)"
                   : "rgba(255,255,255,0.02)",
-                border: isActive
-                  ? "1px solid rgba(212,175,55,0.55)"
-                  : "1px solid rgba(212,175,55,0.1)",
-                boxShadow: isActive ? "0 0 16px rgba(212,175,55,0.2)" : "none",
+                boxShadow: isActive ? "0 0 16px rgba(212,175,55,0.18)" : "none",
+                cursor: "pointer",
+                outline: "none",
+                textAlign: "center",
+                transition: "background 0.2s, border-color 0.2s",
               }}
-              aria-label={`Navigate to ${era.label}`}
-              aria-pressed={isActive}
             >
               {/* Year label */}
-              <span
-                className="font-serif font-bold leading-none text-sm transition-colors duration-200"
+              <p
                 style={{
-                  color: isActive ? "#D4AF37" : isPast ? "rgba(212,175,55,0.6)" : "rgba(244,235,225,0.35)",
+                  margin: 0,
+                  fontFamily: "Georgia, serif",
+                  fontSize: "13px",
+                  fontWeight: isActive ? 700 : 400,
+                  color: isActive ? GOLD : isPast ? "rgba(212,175,55,0.55)" : "rgba(244,235,225,0.3)",
+                  lineHeight: 1.2,
                 }}
               >
                 {era.label}
-              </span>
+              </p>
 
-              {/* Empire count pill */}
-              <div
-                className="mt-1.5 flex items-center gap-0.5"
-              >
+              {/* Empire colour dots */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "3px", marginTop: "6px" }}>
                 {era.empires.map((emp) => (
-                  <div
+                  <span
                     key={emp.id}
-                    className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                    style={{ background: isActive ? emp.borderColor : "rgba(212,175,55,0.25)" }}
                     title={emp.name}
+                    style={{
+                      display: "inline-block",
+                      width: "6px",
+                      height: "6px",
+                      borderRadius: "50%",
+                      background: isActive ? emp.borderColor : "rgba(212,175,55,0.2)",
+                    }}
                   />
                 ))}
               </div>
 
               {/* Active underline */}
               {isActive && (
-                <div
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] rounded-full transition-all duration-300"
-                  style={{
-                    width: "60%",
-                    background: "linear-gradient(to right, transparent, #D4AF37, transparent)",
-                    boxShadow: "0 0 8px rgba(212,175,55,0.6)",
-                  }}
-                />
+                <div style={{ marginTop: "6px", height: "2px", borderRadius: "2px", background: `linear-gradient(to right, transparent, ${GOLD}, transparent)`, boxShadow: `0 0 8px ${GOLD}` }} />
               )}
             </button>
           );
