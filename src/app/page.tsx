@@ -142,7 +142,7 @@ export default function VisualHistoryPage() {
         </div>
       )}
 
-      {/* ── Map legend (bottom left, above timeline) ───── */}
+      {/* ── Map legend — hidden when nav or detail panel is open */}
       <div
         style={{
           position: "fixed",
@@ -155,6 +155,7 @@ export default function VisualHistoryPage() {
           border: BORDER,
           boxShadow: "0 4px 20px rgba(0,0,0,0.55)",
           backdropFilter: "blur(12px)",
+          display: navOpen || detailOpen ? "none" : "block",
         }}
       >
         <p style={{ margin: "0 0 8px", fontFamily: "Arial, sans-serif", fontSize: "9px", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(212,175,55,0.55)" }}>
